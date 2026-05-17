@@ -417,11 +417,18 @@ public class HeroSelectScene extends PixelScene {
 		GamesInProgress.selectedClass = cl;
 		GamesInProgress.randomizedClass = false;
 
+		boolean splashLoadFailed = false;
 		try {
 			//loading these big jpgs fails sometimes, so we have a catch for it
 			background.texture(cl.splashArt());
-		} catch (Exception | OutOfMemoryError e){
+		} catch (Exception e){
 			Game.reportException(e);
+			splashLoadFailed = true;
+		} catch (OutOfMemoryError e){
+			//splash art is cosmetic, so fall back to a tiny solid texture and keep running
+			splashLoadFailed = true;
+		}
+		if (splashLoadFailed){
 			background.texture(TextureCache.createSolid(0xFF2d2f31));
 			background.frame(0, 0, 800, 450);
 		}
