@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -282,8 +283,15 @@ public class Dungeon {
 		hero.live();
 		
 		Badges.reset();
-		
-		GamesInProgress.selectedClass.initHero( hero );
+
+		HeroClass selectedClass = GamesInProgress.selectedClass;
+		if (selectedClass == null){
+			selectedClass = HeroClass.WARRIOR;
+			GamesInProgress.selectedClass = selectedClass;
+			Game.reportException(new IllegalStateException("Selected class was null during Dungeon.init(), defaulting to WARRIOR."));
+		}
+
+		selectedClass.initHero( hero );
 	}
 
 	public static boolean isChallenged( int mask ) {
